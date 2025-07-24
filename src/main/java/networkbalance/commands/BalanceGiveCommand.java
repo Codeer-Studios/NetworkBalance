@@ -22,7 +22,7 @@ public class BalanceGiveCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: /balance give <player> <amount>");
+            sender.sendMessage(ChatColor.RED + "Usage: /balancegive <player> <amount>");
             return true;
         }
 

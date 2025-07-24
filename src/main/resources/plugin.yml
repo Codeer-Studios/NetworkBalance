@@ -9,4 +9,6 @@ commands:
   balancegive:
     description: Give a player balance
     usage: /balancegive <player> <amount>
-    
+  balanceremove:
+    description: Removes a player balance
+    usage: /balanceremove <player> <amount>
