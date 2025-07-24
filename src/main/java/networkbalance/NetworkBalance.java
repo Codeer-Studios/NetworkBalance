@@ -53,7 +53,7 @@ public final class NetworkBalance extends JavaPlugin implements PluginMessageLis
         String password = getConfig().getString("database.password");
 
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC");
+        config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC");
         config.setUsername(username);
         config.setPassword(password);
         config.addDataSourceProperty("cachePrepStmts", "true");
