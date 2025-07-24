@@ -17,7 +17,6 @@ public final class NetworkBalance extends JavaPlugin {
     private DatabaseManager databaseManager;
     private PluginMessageHandler messageHandler;
     private Gson gson;
-    private final Map<String, Double> pendingPayments = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -38,7 +37,6 @@ public final class NetworkBalance extends JavaPlugin {
         getCommand("balancegive").setExecutor(new BalanceGiveCommand(databaseManager));
         getCommand("balanceremove").setExecutor(new BalanceRemoveCommand(databaseManager));
         getCommand("pay").setExecutor(new PayCommand(this));
-        getCommand("payaccept").setExecutor(new PayAcceptCommand(this));
 
         getLogger().info("NetworkBalance enabled!");
     }

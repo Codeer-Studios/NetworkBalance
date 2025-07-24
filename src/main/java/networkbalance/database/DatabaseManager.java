@@ -34,13 +34,16 @@ public class DatabaseManager {
 
     private void createTableIfNotExists() {
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "CREATE TABLE IF NOT EXISTS player_balances (" +
-                             "uuid VARCHAR(36) PRIMARY KEY," +
-                             "balance DOUBLE NOT NULL" +
-                             ");"
-             )) {
-            stmt.executeUpdate();
+             Statement stmt = conn.createStatement()) {
+
+            // Existing player balances table
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS player_balances (" +
+                            "uuid VARCHAR(36) PRIMARY KEY," +
+                            "balance DOUBLE NOT NULL" +
+                            ");"
+            );
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -79,4 +82,5 @@ public class DatabaseManager {
     public void shutdown() {
         dataSource.close();
     }
+
 }

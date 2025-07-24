@@ -2,6 +2,7 @@ package networkbalance.commands;
 
 import com.google.gson.Gson;
 import networkbalance.NetworkBalance;
+import networkbalance.database.DatabaseManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,13 +10,16 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class PayCommand implements CommandExecutor {
 
     private final NetworkBalance plugin;
+    private final DatabaseManager database;
 
     public PayCommand(NetworkBalance plugin) {
         this.plugin = plugin;
+        this.database = plugin.getDatabase();
     }
 
     @Override
@@ -26,7 +30,7 @@ public class PayCommand implements CommandExecutor {
         }
 
         if (args.length != 2) {
-            sender.sendMessage("/pay <player> <amount>");
+            sender.sendMessage("Usage: /pay <player> <amount>");
             return true;
         }
 
@@ -40,24 +44,41 @@ public class PayCommand implements CommandExecutor {
             return true;
         }
 
-        double senderBalance = plugin.getDatabase().getBalance(senderPlayer.getUniqueId());
-        if (amount <= 0 || senderBalance < amount) {
+        if (amount <= 0) {
+            sender.sendMessage("Amount must be positive.");
+            return true;
+        }
+
+        Player targetPlayer = plugin.getServer().getPlayerExact(targetName);
+        if (targetPlayer == null) {
+            sender.sendMessage("Player " + targetName + " is not online.");
+            return true;
+        }
+
+        // Check if both players are in the same world
+        if (!senderPlayer.getWorld().equals(targetPlayer.getWorld())) {
+            sender.sendMessage("You must be in the same world as " + targetName + " to send money.");
+            return true;
+        }
+
+        UUID senderUUID = senderPlayer.getUniqueId();
+        UUID targetUUID = targetPlayer.getUniqueId();
+
+        double senderBalance = database.getBalance(senderUUID);
+        if (senderBalance < amount) {
             sender.sendMessage("You don't have enough balance.");
             return true;
         }
 
-        Map<String, Object> message = new HashMap<>();
-        message.put("plugin", "networkbalance");
-        message.put("type", "PAY_REQUEST");
-        message.put("from", senderPlayer.getName());
-        message.put("to", targetName);
-        message.put("amount", amount);
+        // Perform the transfer
+        database.setBalance(senderUUID, senderBalance - amount);
 
-        plugin.getLogger().info("[PayCommand] Sending PAY_REQUEST to Velocity: " + new Gson().toJson(message));
+        double targetBalance = database.getBalance(targetUUID);
+        database.setBalance(targetUUID, targetBalance + amount);
 
-        plugin.sendPluginMessage(senderPlayer, message);
+        sender.sendMessage("You paid $" + amount + " to " + targetName + ".");
+        targetPlayer.sendMessage("You received $" + amount + " from " + senderPlayer.getName() + ".");
 
-        sender.sendMessage("Payment request sent to " + targetName);
         return true;
     }
 }

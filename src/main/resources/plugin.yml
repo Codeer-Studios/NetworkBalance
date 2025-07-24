@@ -15,6 +15,3 @@ commands:
   pay:
     description: Send money to another player
     usage: /pay <player> <amount>
-  payaccept:
-    description: Accept a payment from another player
-    usage: /payaccept <player>
