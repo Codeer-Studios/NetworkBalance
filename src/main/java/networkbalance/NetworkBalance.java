@@ -1,12 +1,14 @@
 package networkbalance;
 
 import com.google.gson.Gson;
-import networkbalance.commands.BalanceCommand;
-import networkbalance.commands.BalanceGiveCommand;
-import networkbalance.commands.BalanceRemoveCommand;
+import networkbalance.commands.*;
 import networkbalance.database.DatabaseManager;
 import networkbalance.messaging.PluginMessageHandler;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public final class NetworkBalance extends JavaPlugin {
 
@@ -24,12 +26,14 @@ public final class NetworkBalance extends JavaPlugin {
         databaseManager = new DatabaseManager(this);
         messageHandler = new PluginMessageHandler(this, databaseManager, gson);
 
-        getServer().getMessenger().registerIncomingPluginChannel(this, "networkbalance:balance", messageHandler);
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "networkbalance:balance");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "network:core", messageHandler);
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "network:core");
 
         getCommand("balance").setExecutor(new BalanceCommand(databaseManager));
         getCommand("balancegive").setExecutor(new BalanceGiveCommand(databaseManager));
         getCommand("balanceremove").setExecutor(new BalanceRemoveCommand(databaseManager));
+        getCommand("pay").setExecutor(new PayCommand(this));
+        getCommand("payaccept").setExecutor(new PayAcceptCommand(this));
 
         getLogger().info("NetworkBalance enabled!");
     }
@@ -42,7 +46,17 @@ public final class NetworkBalance extends JavaPlugin {
         getLogger().info("NetworkBalance disabled.");
     }
 
+    public void sendPluginMessage(Player player, Map<String, Object> data) {
+        String json = gson.toJson(data); // reuse existing Gson
+        byte[] payload = json.getBytes(StandardCharsets.UTF_8);
+        player.sendPluginMessage(this, "network:core", payload);
+    }
+
     public static NetworkBalance getInstance() {
         return instance;
+    }
+
+    public DatabaseManager getDatabase() {
+        return databaseManager;
     }
 }
