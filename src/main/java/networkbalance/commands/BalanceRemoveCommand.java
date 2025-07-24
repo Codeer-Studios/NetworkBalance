@@ -45,7 +45,7 @@ public class BalanceRemoveCommand implements CommandExecutor {
         double current = database.getBalance(uuid);
         database.setBalance(uuid, current - amount);
 
-        sender.sendMessage(ChatColor.GREEN + "Remove " + amount + " from " + playerName + ". New balance: " + (current + amount));
+        sender.sendMessage(ChatColor.GREEN + "Remove " + amount + " from " + playerName + ". New balance: " + (current - amount));
         return true;
     }
 }
