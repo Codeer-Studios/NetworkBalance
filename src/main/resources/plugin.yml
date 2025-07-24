@@ -1,0 +1,4 @@
+name: NetworkBalance
+version: '1.0-SNAPSHOT'
+main: networkbalance.NetworkBalance
+api-version: '1.21'
