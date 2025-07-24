@@ -28,8 +28,8 @@ public final class NetworkBalance extends JavaPlugin implements PluginMessageLis
 
         setupDatabase();
 
-        getServer().getMessenger().registerIncomingPluginChannel(this, "balance", this);
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "balance");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "networkbalance:balance", this);
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "networkbalance:balance");
 
         getCommand("balance").setExecutor((sender, command, label, args) -> {
             if (!(sender instanceof Player)) {
