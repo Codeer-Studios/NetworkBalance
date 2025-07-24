@@ -36,6 +36,8 @@ public class PayAcceptCommand implements CommandExecutor {
         msg.put("type", "PAY_CONFIRM");
         msg.put("from", senderName);
         msg.put("to", targetPlayer.getName());
+        msg.put("amount", amount);
+
 
         plugin.sendPluginMessage(targetPlayer, msg);
         targetPlayer.sendMessage("Accepted payment from " + senderName);

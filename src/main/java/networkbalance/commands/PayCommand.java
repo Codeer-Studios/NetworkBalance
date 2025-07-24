@@ -1,5 +1,6 @@
 package networkbalance.commands;
 
+import com.google.gson.Gson;
 import networkbalance.NetworkBalance;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -51,6 +52,8 @@ public class PayCommand implements CommandExecutor {
         message.put("from", senderPlayer.getName());
         message.put("to", targetName);
         message.put("amount", amount);
+
+        plugin.getLogger().info("[PayCommand] Sending PAY_REQUEST to Velocity: " + new Gson().toJson(message));
 
         plugin.sendPluginMessage(senderPlayer, message);
 

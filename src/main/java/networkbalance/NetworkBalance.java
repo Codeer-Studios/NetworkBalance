@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 public final class NetworkBalance extends JavaPlugin {
@@ -16,6 +17,7 @@ public final class NetworkBalance extends JavaPlugin {
     private DatabaseManager databaseManager;
     private PluginMessageHandler messageHandler;
     private Gson gson;
+    private final Map<String, Double> pendingPayments = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -28,6 +30,9 @@ public final class NetworkBalance extends JavaPlugin {
 
         getServer().getMessenger().registerIncomingPluginChannel(this, "network:core", messageHandler);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "network:core");
+
+        getLogger().info("Registering plugin channels on network:core");
+
 
         getCommand("balance").setExecutor(new BalanceCommand(databaseManager));
         getCommand("balancegive").setExecutor(new BalanceGiveCommand(databaseManager));
@@ -48,6 +53,9 @@ public final class NetworkBalance extends JavaPlugin {
 
     public void sendPluginMessage(Player player, Map<String, Object> data) {
         String json = gson.toJson(data); // reuse existing Gson
+
+        getLogger().info("[sendPluginMessage] Sending plugin message to player " + player.getName() + ": " + json);
+
         byte[] payload = json.getBytes(StandardCharsets.UTF_8);
         player.sendPluginMessage(this, "network:core", payload);
     }
@@ -59,4 +67,5 @@ public final class NetworkBalance extends JavaPlugin {
     public DatabaseManager getDatabase() {
         return databaseManager;
     }
+
 }

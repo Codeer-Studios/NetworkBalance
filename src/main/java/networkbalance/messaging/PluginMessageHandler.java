@@ -16,14 +16,19 @@ public class PluginMessageHandler implements PluginMessageListener {
 
     private final DatabaseManager database;
     private final Gson gson;
+    private final JavaPlugin plugin;
 
     public PluginMessageHandler(JavaPlugin plugin, DatabaseManager database, Gson gson) {
         this.database = database;
         this.gson = gson;
+        this.plugin = plugin;
     }
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        System.out.println("[PluginMessageHandler] Received plugin message on channel: " + channel);
+        String json2 = new String(message, StandardCharsets.UTF_8);
+        System.out.println("[PluginMessageHandler] Message content: " + json2);
         if (!channel.equals("network:core")) return;
 
         String json = new String(message, StandardCharsets.UTF_8);
@@ -58,6 +63,8 @@ public class PluginMessageHandler implements PluginMessageListener {
                 String to = (String) msg.get("to");
                 double amount = ((Number) msg.get("amount")).doubleValue();
 
+                NetworkBalance.getInstance().addPendingPayment(from, to, amount);
+
                 Player target = Bukkit.getPlayerExact(to);
                 if (target == null) return;
 
@@ -86,6 +93,10 @@ public class PluginMessageHandler implements PluginMessageListener {
 
                 sender.sendMessage("§aYou paid §e$" + amount + "§a to " + to + ".");
                 receiver.sendMessage("§aYou received §e$" + amount + "§a from " + from + ".");
+
+                plugin.remo
+
+
             }
         }
     }
