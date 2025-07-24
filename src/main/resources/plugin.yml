@@ -6,3 +6,7 @@ author: 'Thomas Froud'
 commands:
   balance:
     description: Check your balance
+  balancegive:
+    description: Give a player balance
+    usage: /balancegive <player> <amount>
+    

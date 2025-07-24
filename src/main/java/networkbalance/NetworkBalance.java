@@ -2,6 +2,7 @@ package networkbalance;
 
 import com.google.gson.Gson;
 import networkbalance.commands.BalanceCommand;
+import networkbalance.commands.BalanceGiveCommand;
 import networkbalance.database.DatabaseManager;
 import networkbalance.messaging.PluginMessageHandler;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,7 @@ public final class NetworkBalance extends JavaPlugin {
         getServer().getMessenger().registerOutgoingPluginChannel(this, "networkbalance:balance");
 
         getCommand("balance").setExecutor(new BalanceCommand(databaseManager));
+        getCommand("balancegive").setExecutor(new BalanceGiveCommand(databaseManager));
 
         getLogger().info("NetworkBalance enabled!");
     }
